@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#168bff">
+<meta name="description" content="لعبة سيليا التعليمية: حروف وأرقام وألوان وحيوانات ورحلات ممتعة.">
+<meta name="application-name" content="Celia Smart Game">
+<title>لعبة سيليا | Celia Smart Game v3.4</title>
+<style>
+:root{--blue:#168bff;--pink:#f329a8;--yellow:#ffd83d;--white:#fff;--ink:#24304a;--bg:#eef7ff;--card:#fff;--muted:#64748b;--shadow:0 12px 30px #17416b1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(145deg,#e8f5ff,#fff4fb);color:var(--ink);min-height:100vh}
+body.dark{--bg:#111827;--card:#1f2937;--ink:#f8fafc;--muted:#cbd5e1;background:linear-gradient(145deg,#101c32,#30152c)}
+button{font:inherit;cursor:pointer;border:0;border-radius:17px;padding:12px 15px;font-weight:800;transition:transform .12s}
+button:active{transform:scale(.97)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:12px max(12px,calc((100vw - 900px)/2));background:var(--blue);color:white;position:sticky;top:0;z-index:5;box-shadow:var(--shadow)}
+.brand{font-weight:1000;font-size:1.08rem}
+.tools{display:flex;gap:7px}
+.tools button{background:#fff;color:#1267bf;padding:9px 12px}
+main{max-width:900px;margin:auto;padding:16px}
+.hero{background:linear-gradient(125deg,#168bff,#5ab5ff 58%,#f329a8);color:#fff;border-radius:28px;padding:22px;display:grid;grid-template-columns:130px 1fr;align-items:center;gap:18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.portrait{width:130px;height:130px;object-fit:cover;object-position:center 28%;border:5px solid #fff;border-radius:30px;box-shadow:0 8px 22px #002e6c55;background:#fff}
+h1{margin:0 0 6px;font-size:clamp(1.35rem,4vw,2.1rem)}
+.hero p{margin:6px 0 14px;font-size:1.05rem}
+.primary{background:var(--yellow);color:#553d00;padding:13px 22px;box-shadow:0 5px 0 #d8a900}
+.section-title{font-size:1.25rem;margin:23px 3px 12px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{background:var(--card);color:var(--ink);text-align:right;min-height:120px;padding:16px;border:2px solid transparent;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.tile:hover{border-color:var(--pink)}
+.emoji{font-size:2rem}
+.tile small{color:var(--muted);font-weight:600}
+.panel{margin-top:16px;background:var(--card);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.hidden{display:none!important}
+.choices{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.choice{background:#e7f3ff;color:#12549b;min-width:75px}
+.big-emoji{font-size:4rem;text-align:center;margin:10px}
+.feedback{font-weight:900;min-height:28px;color:#0b9b68}
+.muted{color:var(--muted)}
+.back{background:#e7eff8;color:#29415d;margin-bottom:12px}
+.progress{height:9px;background:#e5e7eb;border-radius:9px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--pink);width:0;transition:width .2s}
+.animal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.animal{background:var(--card);border:2px solid #e4effa;border-radius:18px;padding:14px;text-align:center;color:var(--ink)}
+.animal .emoji{display:block}
+.animal strong{display:block}
+.animal small{display:block;color:var(--muted);margin:4px}
+footer{text-align:center;padding:25px 12px;color:var(--muted);font-size:.85rem}
+@media(max-width:520px){
+  .hero{grid-template-columns:88px 1fr;padding:16px;gap:12px}
+  .portrait{width:88px;height:104px;border-radius:22px}
+  .hero p{font-size:.95rem}
+  .tiles{gap:9px}
+  .tile{padding:13px;min-height:112px}
+  .tools button{font-size:.85rem;padding:8px 10px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">🌈 Celia Kids World</div>
+  <div class="tools">
+    <button id="langBtn" onclick="toggleLang()">EN / عربي</button>
+    <button id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <button id="soundBtn" onclick="toggleMusic()">🎵</button>
+  </div>
+</header>
+
+<main>
+<section id="home">
+  <div class="hero">
+    <img class="portrait" alt="صورة سيليا" src="celia.jpg"
+         onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22130%22 height=%22130%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23ffd1e8%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%2260%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>🌸</text></svg>'">
+    <div>
+      <h1 id="welcome">أهلًا يا سيليا الجميلة! 💖</h1>
+      <p id="subtitle">مستعدة نلعب ونتعلم ونكتشف العالم؟</p>
+      <button class="primary" onclick="sayWelcome()" id="welcomeBtn">يلا نبدأ! ✨</button>
+    </div>
+  </div>
+
+  <h2 class="section-title" id="learnTitle">اختاري مغامرتك يا سيليا</h2>
+  <div class="tiles">
+    <button class="tile" onclick="openView('animals')"><span class="emoji">🦁🐘</span><span id="animalTile">عالم الحيوانات</span><small id="animalSub">الأسماء والأصوات</small></button>
+    <button class="tile" onclick="openView('numbers')"><span class="emoji">🔢⭐</span><span id="numberTile">مغامرة الأرقام</span><small id="numberSub">عدّي واجمعي النجوم</small></button>
+    <button class="tile" onclick="openView('colors')"><span class="emoji">🎨🟡</span><span id="colorTile">لعبة الألوان</span><small id="colorSub">اختاري اللون الصحيح</small></button>
+    <button class="tile" onclick="openView('tours')"><span class="emoji">🗺️🌳</span><span id="tourTile">رحلات الاستكشاف</span><small id="tourSub">الجيزة وعالم ديزني</small></button>
+    <button class="tile" onclick="openView('memory')"><span class="emoji">🧩💗</span><span id="memoryTile">لعبة المطابقة الذكية</span><small id="memorySub">٧ أزواج في عمودين · ٣ مستويات</small></button>
+    <button class="tile" onclick="openView('song')"><span class="emoji">🎤🎶</span><span id="songTile">أغنية سيليا</span><small id="songSub">أنشودة قصيرة مبهجة</small></button>
+    <button class="tile" onclick="openView('cubes')"><span class="emoji">🧱🏰</span><span>المكعبات والإبداع</span><small>ابني بيتًا أو برجًا أو شكلًا خياليًا</small></button>
+    <button class="tile" onclick="openView('transport')"><span class="emoji">🚗🚂</span><span>وسائل النقل</span><small>الأسماء والأصوات التعليمية</small></button>
+  </div>
+
+  <div class="panel">
+    <strong id="starTitle">⭐ نجوم سيليا</strong>
+    <p><span id="starLabel">نجومك الجميلة:</span> <strong id="stars">0</strong> ⭐</p>
+    <div class="progress"><span id="progress"></span></div>
+    <small class="muted" id="progressText">العبي واجمعي النجوم!</small>
+  </div>
+</section>
+
+<section id="view" class="hidden">
+  <button class="back" onclick="goHome()" id="backBtn">← الرجوع للقائمة</button>
+  <div id="viewContent" class="panel"></div>
+</section>
+</main>
+
+<footer id="footer">صُنع بحب لسيليا 💗 · v3.4 · صورة سيليا الحقيقية · بعض الأصوات اصطناعية</footer>
+
+<script>
+'use strict';
+
+/* ========== Helpers ========== */
+const $ = id => document.getElementById(id);
+
+function safeGet(key, fallback = null) {
+  try { const v = localStorage.getItem(key); return v === null ? fallback : v; }
+  catch { return fallback; }
+}
+function safeSet(key, value) {
+  try { localStorage.setItem(key, String(value)); return true; }
+  catch { return false; }
+}
+function title(ar, en) { return lang === 'ar' ? ar : en; }
+
+/* ========== State ========== */
+let lang = safeGet('celiaLang', 'ar') === 'en' ? 'en' : 'ar';
+let stars = Math.max(0, Number.parseInt(safeGet('celiaStars', '0'), 10) || 0);
+let musicOn = false;
+let audioCtx = null;
+let colorRound = 0;
+let numRound = 1;
+
+/* ========== Translations ========== */
+const t = {
+  ar: {
+    welcome: 'أهلًا يا سيليا الجميلة! 💖',
+    subtitle: 'مستعدة نلعب ونتعلم ونكتشف العالم؟',
+    start: 'يلا نبدأ! ✨',
+    learn: 'اختاري مغامرتك يا سيليا',
+    animals: 'عالم الحيوانات', animalSub: 'الأسماء والأصوات',
+    numbers: 'مغامرة الأرقام', numberSub: 'عدّي واجمعي النجوم',
+    colors: 'لعبة الألوان', colorSub: 'اختاري اللون الصحيح',
+    tours: 'رحلات الاستكشاف', tourSub: 'الجيزة وعالم ديزني',
+    memory: 'لعبة المطابقة', memorySub: 'وصّلي كل صورة بما يناسبها',
+    song: 'أغنية سيليا', songSub: 'أنشودة قصيرة مبهجة',
+    back: '← الرجوع للقائمة',
+    star: 'نجوم سيليا', starLabel: 'نجومك الجميلة:',
+    progress: 'العبي واجمعي النجوم!',
+    footer: 'صُنع بحب لسيليا 💗 · v3.4 · صورة سيليا الحقيقية · بعض الأصوات اصطناعية'
+  },
+  en: {
+    welcome: 'Hello, lovely Celia! 💖',
+    subtitle: 'Ready to play, learn and explore?',
+    start: "Let's go! ✨",
+    learn: 'Choose your adventure, Celia!',
+    animals: 'Animal World', animalSub: 'Names and sounds',
+    numbers: 'Number Adventure', numberSub: 'Count and collect stars',
+    colors: 'Color Game', colorSub: 'Choose the right color',
+    tours: 'Explore the World', tourSub: 'Giza and Disney',
+    memory: 'Matching Game', memorySub: 'Match each picture to its partner',
+    song: "Celia's Song", songSub: 'A cheerful little rhyme',
+    back: '← Back to menu',
+    star: "Celia's Stars", starLabel: 'Your lovely stars:',
+    progress: 'Play and collect stars!',
+    footer: 'Made with love for Celia 💗 · v3.4'
+  }
+};
+
+const LANG_IDS = {
+  welcome:'welcome', subtitle:'subtitle', start:'welcomeBtn', learn:'learnTitle',
+  animals:'animalTile', animalSub:'animalSub', numbers:'numberTile', numberSub:'numberSub',
+  colors:'colorTile', colorSub:'colorSub', tours:'tourTile', tourSub:'tourSub',
+  memory:'memoryTile', memorySub:'memorySub', song:'songTile', songSub:'songSub',
+  back:'backBtn', star:'starTitle', starLabel:'starLabel', progress:'progressText',
+  footer:'footer'
+};
+
+/* ========== Language ========== */
+function applyLang(silent = false) {
+  const x = t[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  Object.entries(LANG_IDS).forEach(([key, id]) => {
+    const el = $(id);
+    if (el && x[key] !== undefined) el.textContent = x[key];
+  });
+  // Re-render open view, but WITHOUT triggering speech
+  const view = $('view');
+  if (view && !view.classList.contains('hidden') && view.dataset.type) {
+    const type = view.dataset.type;
+    const c = $('viewContent');
+    const renderers = {
+      animals: renderAnimals, numbers: renderNumbers, colors: renderColors,
+      tours: renderTours, memory: renderMemory, song: renderSong,
+      cubes: renderCubes, transport: renderTransport
+    };
+    if (renderers[type]) renderers[type](c);
+    if (!silent && type === 'tours') renderTourStop();
+  }
+}
+
+function toggleLang() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  safeSet('celiaLang', lang);
+  applyLang(true); // silent = no speech on language toggle
+}
+
+/* ========== Theme ========== */
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const dark = document.body.classList.contains('dark');
+  safeSet('celiaTheme', dark ? 'dark' : 'light');
+  $('themeBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+/* ========== Audio ========== */
+document.addEventListener('click', unlockAudio, { capture: true, passive: true });
+
+function unlockAudio() {
+  try {
+    if (window.AudioContext || window.webkitAudioContext) {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+    if ('speechSynthesis' in window) speechSynthesis.getVoices();
+  } catch (_) {}
+}
+
+function beep(freq = 660, dur = 0.15) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = freq; g.gain.value = 0.06;
+    o.connect(g); g.connect(audioCtx.destination); o.start();
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.stop(audioCtx.currentTime + dur);
+  } catch (_) {}
+}
+
+function speak(text) {
+  const msg = String(text || '');
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  } catch (_) {}
+
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    beep(660, 0.22); return;
+  }
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(msg);
+    u.lang = lang === 'ar' ? 'ar-EG' : 'en-US';
+    u.rate = 0.82; u.pitch = 1.12; u.volume = 1;
+    const voices = speechSynthesis.getVoices();
+    const preferred = lang === 'ar'
+      ? voices.find(v => /^ar(-|_)/i.test(v.lang))
+      : voices.find(v => /^en(-|_)(US|GB)/i.test(v.lang));
+    if (preferred) u.voice = preferred;
+    speechSynthesis.speak(u);
+    setTimeout(() => { if (speechSynthesis.paused) speechSynthesis.resume(); }, 180);
+  } catch (_) { beep(660, 0.2); }
+}
+
+function sayWelcome() {
+  speak(lang === 'ar'
+    ? 'أهلا يا سيليا الجميلة! يلا نلعب ونتعلم ونفرح!'
+    : 'Hello lovely Celia! Let us play, learn and have fun!');
+  beep(660, 0.14);
+  setTimeout(() => beep(880, 0.16), 180);
+}
+
+function toggleMusic() {
+  unlockAudio();
+  musicOn = !musicOn;
+  $('soundBtn').textContent = musicOn ? '🔇' : '🎵';
+  if (musicOn) {
+    [523, 659, 784, 659].forEach((n, i) =>
+      setTimeout(() => { if (musicOn) beep(n, 0.18); }, i * 220));
+  }
+}
+
+/* ========== Stars ========== */
+function addStar(n = 1) {
+  stars = Math.max(0, stars + (Number(n) || 1));
+  safeSet('celiaStars', stars);
+  $('stars').textContent = stars;
+  $('progress').style.width = Math.min(100, stars * 5) + '%';
+  $('progressText').textContent = lang === 'ar'
+    ? 'رائع يا سيليا! أحسنتِ! ⭐'
+    : 'Great job, Celia! ⭐';
+  beep(880, 0.2);
+}
+
+/* ========== Navigation ========== */
+const renderers = {
+  animals: renderAnimals, numbers: renderNumbers, colors: renderColors,
+  tours: renderTours, memory: renderMemory, song: renderSong,
+  cubes: renderCubes, transport: renderTransport
+};
+
+function openView(type) {
+  $('home').classList.add('hidden');
+  const v = $('view');
+  v.classList.remove('hidden');
+  v.dataset.type = type;
+  const c = $('viewContent');
+  if (renderers[type]) renderers[type](c);
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  stopTour();
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  $('view').classList.add('hidden');
+  $('home').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+/* ========== Animals ========== */
+const animals = [
+  { ar:'أسد', en:'Lion', e:'🦁', sound:'ررر! أنا الأسد، ملك الغابة!', voice:'Roar! I am a lion!' },
+  { ar:'فيل', en:'Elephant', e:'🐘', sound:'بروووه! أنا الفيل الكبير!', voice:'Trumpet! I am an elephant!' },
+  { ar:'قطة', en:'Cat', e:'🐱', sound:'مياو مياو! أنا القطة!', voice:'Meow meow! I am a cat!' },
+  { ar:'كلب', en:'Dog', e:'🐶', sound:'هو هو! أنا الكلب الوفي!', voice:'Woof woof! I am a dog!' },
+  { ar:'بقرة', en:'Cow', e:'🐮', sound:'مووو! أنا البقرة!', voice:'Moo! I am a cow!' },
+  { ar:'بطة', en:'Duck', e:'🦆', sound:'كواك كواك! أنا البطة!', voice:'Quack quack! I am a duck!' },
+  { ar:'قرد', en:'Monkey', e:'🐵', sound:'أوو أوو! أنا القرد المرح!', voice:'Oo oo! I am a monkey!' },
+  { ar:'عصفور', en:'Bird', e:'🐦', sound:'تغريد جميل! أنا العصفور!', voice:'Tweet tweet! I am a bird!' }
+];
+
+function renderAnimals(c) {
+  c.innerHTML = `
+    <h2>${title('🦁 عالم الحيوانات','🦁 Animal World')}</h2>
+    <p>${title('اختاري حيوانًا لتسمعي اسمه ومعلومة عنه.','Choose an animal for its name and a fact.')}</p>
+    <div class="animal-grid">
+      ${animals.map((a, i) => `
+        <button type="button" class="animal" data-animal-index="${i}">
+          <span class="emoji">${a.e}</span>
+          <strong>${lang === 'ar' ? a.ar : a.en}</strong>
+          <small>${title('معلومة وصوت 🔊','Fact and voice 🔊')}</small>
+        </button>`).join('')}
+    </div>
+    <p class="muted">${title('الصوت الحالي نطق اصطناعي من الهاتف.','Current sound is synthetic device speech.')}</p>
+    <p id="animalFact" class="feedback"></p>
+  `;
+  c.querySelectorAll('[data-animal-index]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = Number(btn.dataset.animalIndex);
+      if (Number.isInteger(i) && animals[i]) animalSpeak(i);
+    });
+  });
+}
+
+function animalSpeak(i) {
+  const a = animals[i];
+  speak(lang === 'ar' ? a.ar + '. ' + a.sound : a.en + '. ' + a.voice);
+  const f = $('animalFact');
+  if (f) f.textContent = lang === 'ar'
+    ? 'معلومة الحيوان: ' + a.ar + '. اسألي سيليا: ما لون هذا الحيوان؟'
+    : 'Animal: ' + a.en + '. Ask Celia: What color is this animal?';
+}
+
+/* ========== Numbers ========== */
+function renderNumbers(c) {
+  const n = numRound;
+  c.innerHTML = `
+    <h2>${title('🔢 مغامرة الأرقام','🔢 Number Adventure')}</h2>
+    <p>${title('كم نجمة ترين؟ اختاري الرقم الصحيح.','How many stars? Choose the right number.')}</p>
+    <div class="big-emoji">${'⭐'.repeat(n)}</div>
+    <div class="choices">
+      ${[1,2,3,4,5].sort(() => Math.random() - 0.5).map(k =>
+        `<button class="choice" onclick="numberAnswer(${k})">${k}</button>`).join('')}
+    </div>
+    <p id="numFeedback" class="feedback"></p>
+  `;
+}
+
+function numberAnswer(k) {
+  const f = $('numFeedback');
+  if (!f) return;
+  if (k === numRound) {
+    f.textContent = title('برافو يا سيليا! إجابة صحيحة 🎉','Bravo, Celia! Correct! 🎉');
+    addStar();
+    numRound = (numRound % 5) + 1;
+    setTimeout(() => {
+      if ($('view').dataset.type === 'numbers') renderNumbers($('viewContent'));
+    }, 900);
+  } else {
+    f.textContent = title('حاولي مرة أخرى يا بطلة 💗','Try again! 💗');
+    beep(280, 0.2);
+  }
+}
+
+/* ========== Colors ========== */
+const colorOptions = [
+  { ar:'أزرق', en:'Blue', c:'#168bff' },
+  { ar:'فوشيا', en:'Fuchsia', c:'#f329a8' },
+  { ar:'أصفر', en:'Yellow', c:'#ffd83d' },
+  { ar:'أخضر', en:'Green', c:'#35bd78' }
+];
+
+function renderColors(c) {
+  const wanted = colorOptions[colorRound % colorOptions.length];
+  c.innerHTML = `
+    <h2>${title('🎨 لعبة الألوان','🎨 Color Game')}</h2>
+    <p>${title('اختاري اللون: ','Choose the color: ')}<strong>${lang === 'ar' ? wanted.ar : wanted.en}</strong></p>
+    <div class="choices">
+      ${colorOptions.slice().sort(() => Math.random() - 0.5).map(o => `
+        <button style="background:${o.c};color:${o.ar === 'أصفر' ? '#4b3900' : 'white'};min-width:100px;min-height:75px"
+                onclick="colorAnswer('${o.ar}')">
+          ${lang === 'ar' ? o.ar : o.en}
+        </button>`).join('')}
+    </div>
+    <p id="colorFeedback" class="feedback"></p>
+  `;
+}
+
+function colorAnswer(a) {
+  const f = $('colorFeedback');
+  if (!f) return;
+  if (a === colorOptions[colorRound % colorOptions.length].ar) {
+    f.textContent = title('رائع! لون صحيح 🌈','Wonderful! Correct 🌈');
+    addStar();
+    colorRound++;
+    setTimeout(() => {
+      if ($('view').dataset.type === 'colors') renderColors($('viewContent'));
+    }, 850);
+  } else {
+    f.textContent = title('جربي لونًا آخر!','Try another color!');
+  }
+}
+
+/* ========== Tours ========== */
+let tourState = { stops: [], index: 0, interval: null, seconds: 60, which: 'giza' };
+
+function stopTour() {
+  if (tourState.interval) {
+    clearInterval(tourState.interval);
+    tourState.interval = null;
+  }
+}
+
+function renderTours(c) {
+  c.innerHTML = `
+    <h2>${title('🗺️ رحلات سيليا الاستكشافية','🗺️ Celia’s Discovery Tours')}</h2>
+    <p>${title('اختاري رحلة تعليمية قصيرة.','Choose a short learning journey.')}</p>
+    <div class="tiles">
+      <button class="tile" onclick="tour('giza',60)">
+        <span class="emoji">🦒🌳</span>
+        <strong>${title('حديقة الحيوان بالجيزة','Giza Zoo')}</strong>
+        <small>${title('حديقة تاريخية في مصر','A historic garden in Egypt')}</small>
+      </button>
+      <button class="tile" onclick="tour('disney',60)">
+        <span class="emoji">🏰🎠</span>
+        <strong>${title('عالم ديزني','Disney Parks')}</strong>
+        <small>${title('قلاع وألعاب خيالية','Castles and fantasy rides')}</small>
+      </button>
+    </div>
+    <div class="tile" style="margin-top:12px">
+      <strong>${title('اختاري مدة الجولة','Choose tour duration')}</strong>
+      <div class="choices">
+        <button class="choice" onclick="tour('giza',60)">${title('الجيزة · دقيقة','Zoo · 1 min')}</button>
+        <button class="choice" onclick="tour('giza',180)">${title('الجيزة · ٣ دقائق','Zoo · 3 min')}</button>
+        <button class="choice" onclick="tour('disney',60)">${title('ديزني · دقيقة','Disney · 1 min')}</button>
+        <button class="choice" onclick="tour('disney',180)">${title('ديزني · ٣ دقائق','Disney · 3 min')}</button>
+      </div>
+    </div>
+    <div id="tourDetails"></div>
+  `;
+}
+
+function renderTourStop() {
+  const root = $('tourDetails');
+  if (!root || !tourState.stops.length) return;
+  const s = tourState.stops[tourState.index];
+  const isGiza = tourState.which === 'giza';
+  root.innerHTML = `
+    <section class="tile" style="margin-top:14px">
+      <h3>${isGiza ? title('رحلة حديقة الحيوان','Giza Zoo tour') : title('رحلة عالم ديزني','Disney Parks tour')}</h3>
+      <p>${title('المحطة','Stop')} ${tourState.index + 1} ${title('من','of')} ${tourState.stops.length}</p>
+      <div class="big-emoji">${s[0]}</div>
+      <h3>${s[1]}</h3>
+      <p>${s[2]}</p>
+      <div class="choices">
+        <button class="choice" onclick="speak(tourState.stops[tourState.index][2])">🔊 ${title('استمعي','Listen')}</button>
+        <button class="choice" onclick="tourStep(-1)">⬅️ ${title('السابق','Previous')}</button>
+        <button class="choice" onclick="tourStep(1)">${title('التالي','Next')} ➡️</button>
+      </div>
+      <p class="muted">${title('المدة','Duration')}: ${tourState.seconds === 60 ? title('دقيقة','1 min') : title('٣ دقائق','3 min')}</p>
+      <button class="primary" style="width:100%" onclick="${tourState.interval ? 'pauseTour()' : 'startTour()'}">
+        ${tourState.interval ? title('⏸ إيقاف','⏸ Pause') : title('▶️ ابدئي','▶️ Start')}
+      </button>
+    </section>
+  `;
+}
+
+function tourStep(delta) {
+  tourState.index = (tourState.index + delta + tourState.stops.length) % tourState.stops.length;
+  renderTourStop();
+  speak(tourState.stops[tourState.index][2]);
+}
+
+function pauseTour() { stopTour(); renderTourStop(); }
+
+function startTour() {
+  stopTour();
+  speak(tourState.stops[tourState.index][2]);
+  const gap = Math.max(12000, Math.floor(tourState.seconds * 1000 / tourState.stops.length));
+  tourState.interval = setInterval(() => {
+    if (tourState.index >= tourState.stops.length - 1) {
+      stopTour(); addStar(2); renderTourStop(); return;
+    }
+    tourState.index++;
+    renderTourStop();
+    speak(tourState.stops[tourState.index][2]);
+  }, gap);
+  renderTourStop();
+}
+
+function tour(which, duration = 60) {
+  if (which !== 'giza' && which !== 'disney') which = 'giza';
+  stopTour();
+  tourState.which = which;
+  tourState.seconds = Number(duration) || 60;
+  tourState.index = 0;
+  const isGiza = which === 'giza';
+
+  tourState.stops = isGiza ? [
+    ['🌳', title('المحطة ١: البوابة','Stop 1: Entrance'), title('أهلًا يا سيليا! نحن في جولة تعليمية تخيلية.','Welcome, Celia! This is a sample tour.')],
+    ['🦒', title('المحطة ٢: الزرافة','Stop 2: Giraffe'), title('الزرافة لها رقبة طويلة لتلتقط أوراق الأشجار.','A giraffe has a long neck to grab leaves.')],
+    ['🐦', title('المحطة ٣: الطيور','Stop 3: Birds'), title('للطيور ريش ومناقير وأصوات مختلفة.','Birds have feathers, beaks and calls.')],
+    ['🦁', title('المحطة ٤: الأسد','Stop 4: Lion'), title('نشاهد الحيوانات من مكان آمن.','Observe animals safely.')],
+    ['⭐', title('المحطة ٥: النجمة','Stop 5: Star'), title('انتهت الجولة! أحسنتِ!','Tour complete! Well done!')]
+  ] : [
+    ['🏰', title('المحطة ١: القلعة','Stop 1: Castle'), title('أهلًا بعالم الخيال!','Welcome to imagination!')],
+    ['🎠', title('المحطة ٢: الألعاب','Stop 2: Rides'), title('نختار لعبة مناسبة لعمرنا.','Choose age-appropriate rides.')],
+    ['🐭', title('المحطة ٣: الشخصيات','Stop 3: Characters'), title('الشخصيات تساعدنا على التخيل.','Characters inspire imagination.')],
+    ['🌈', title('المحطة ٤: الألوان','Stop 4: Colors'), title('الألوان تصنع مشاهد مبهجة.','Colors make cheerful scenes.')],
+    ['⭐', title('المحطة ٥: النجمة','Stop 5: Star'), title('هذه تجربة تعليمية وليست جولة رسمية.','This is educational, not an official tour.')]
+  ];
+  renderTourStop();
+}
+
+/* ========== Transport ========== */
+const transportItems = [
+  { e:'🚗', ar:'سيارة', en:'Car', arS:'بيب بيب! السيارة تسير على الطريق.', enS:'Beep beep! A car travels on roads.' },
+  { e:'🚂', ar:'قطار', en:'Train', arS:'تشو تشو! القطار يسير على القضبان.', enS:'Choo choo! A train travels on tracks.' },
+  { e:'✈️', ar:'طائرة', en:'Airplane', arS:'الطائرة تطير في السماء.', enS:'An airplane flies in the sky.' },
+  { e:'🚢', ar:'سفينة', en:'Ship', arS:'السفينة تبحر فوق الماء.', enS:'A ship sails on water.' },
+  { e:'🚲', ar:'دراجة', en:'Bicycle', arS:'الدراجة تتحرك بالدواسات.', enS:'A bicycle moves with pedals.' },
+  { e:'🚑', ar:'إسعاف', en:'Ambulance', arS:'سيارة الإسعاف تساعد المرضى.', enS:'An ambulance helps people.' },
+  { e:'🚁', ar:'هليكوبتر', en:'Helicopter', arS:'الهليكوبتر تقف في الهواء.', enS:'A helicopter can hover.' },
+  { e:'🚌', ar:'حافلة', en:'Bus', arS:'الحافلة تنقل الناس.', enS:'A bus carries people.' }
+];
+
+function renderTransport(c) {
+  c.innerHTML = `
+    <h2>${title('🚗 وسائل النقل','🚗 Transport World')}</h2>
+    <p>${title('اضغطي على وسيلة النقل لتسمعي اسمها.','Tap a vehicle to hear its name.')}</p>
+    <div class="animal-grid">
+      ${transportItems.map((x, i) => `
+        <button class="animal" onclick="transportSpeak(${i})">
+          <span class="emoji">${x.e}</span>
+          <strong>${lang === 'ar' ? x.ar : x.en}</strong>
+          <small>${title('اسمعي 🔊','Listen 🔊')}</small>
+        </button>`).join('')}
+    </div>
+    <p class="feedback" id="transportFact"></p>
+  `;
+}
+
+function transportSpeak(i) {
+  const x = transportItems[i];
+  speak(lang === 'ar' ? x.ar + '. ' + x.arS : x.en + '. ' + x.enS);
+  const f = $('transportFact');
+  if (f) f.textContent = lang === 'ar' ? 'صوت اصطناعي تعليمي.' : 'Synthetic educational speech.';
+}
+
+/* ========== Cubes ========== */
+const cubePieces = [
+  ['🟥','أحمر'],['🟦','أزرق'],['🟨','أصفر'],['🟩','أخضر'],['🔺','مثلث'],
+  ['⚪','دائرة'],['🟫','بني'],['🚪','باب'],['🪟','نافذة'],['⭐','نجمة']
+];
+
+let selectedCube = null;
+
+function renderCubes(c) {
+  selectedCube = null;
+  c.innerHTML = `
+    <h2>🧱 ${title('ورشة المكعبات','Blocks Workshop')}</h2>
+    <p>${title('اختاري قطعة ثم اضغطي على مساحة البناء.','Choose a piece then tap the build area.')}</p>
+    <div class="choices" style="flex-wrap:wrap">
+      ${cubePieces.map((x, i) => `
+        <button class="choice" onclick="selectCube(${i})" style="font-size:1.15rem">
+          ${x[0]}<small style="display:block">${x[1]}</small>
+        </button>`).join('')}
+    </div>
+    <p id="cubeStatus" class="feedback">${title('اختاري قطعة.','Select a piece.')}</p>
+    <div id="buildArea" onclick="placeSelectedCube()"
+         style="min-height:210px;background:linear-gradient(#e8f7ff,#fff);border:3px dashed #8abbe9;border-radius:20px;padding:12px;display:flex;flex-wrap:wrap;align-content:flex-end;align-items:flex-end;gap:8px"></div>
+    <div class="choices" style="margin-top:12px;flex-wrap:wrap">
+      <button class="choice" onclick="saveBuild()">💾 ${title('حفظ','Save')}</button>
+      <button class="choice" onclick="loadBuild()">📂 ${title('استعادة','Load')}</button>
+      <button class="choice" onclick="clearBuild()">🔄 ${title('إعادة','Rebuild')}</button>
+    </div>
+    <small class="muted">${title('الحفظ محلي فقط.','Saved locally only.')}</small>
+  `;
+}
+
+function selectCube(i) {
+  selectedCube = i;
+  const e = $('cubeStatus');
+  if (e) e.textContent = title('تم اختيار: ','Selected: ') + cubePieces[i][1];
+}
+
+function placeSelectedCube() {
+  if (selectedCube !== null) placeCube(selectedCube);
+}
+
+function placeCube(i) {
+  if (!Number.isInteger(i) || !cubePieces[i]) return;
+  const area = $('buildArea');
+  if (!area) return;
+  const b = document.createElement('button');
+  b.className = 'choice';
+  b.textContent = cubePieces[i][0];
+  b.title = cubePieces[i][1];
+  b.style.fontSize = '2rem';
+  b.onclick = () => b.remove();
+  area.appendChild(b);
+}
+
+function clearBuild() {
+  const a = $('buildArea');
+  if (a) a.replaceChildren();
+  const s = $('cubeStatus');
+  if (s) s.textContent = title('مساحة جديدة!','Fresh space!');
+}
+
+function saveBuild() {
+  const a = $('buildArea');
+  if (!a) return;
+  const indices = [...a.children].map(b =>
+    cubePieces.findIndex(p => p[0] === b.textContent));
+  try {
+    localStorage.setItem('celiaCubeBuild', JSON.stringify(indices));
+    const s = $('cubeStatus');
+    if (s) s.textContent = title('تم الحفظ.','Saved.');
+  } catch (_) {}
+}
+
+function loadBuild() {
+  let a = [];
+  try { a = JSON.parse(localStorage.getItem('celiaCubeBuild') || '[]'); } catch (_) { a = []; }
+  clearBuild();
+  a.forEach(i => placeCube(i));
+}
+
+/* ========== Memory Matching ========== */
+const matchingLevels = [
+  { nameAr:'المستوى ١: علاقات سهلة', nameEn:'Level 1: Easy', pairs:[
+    { a:'🐱', b:'🥛', arA:'قطة', arB:'حليب', enA:'Cat', enB:'Milk' },
+    { a:'🐶', b:'🦴', arA:'كلب', arB:'عظمة', enA:'Dog', enB:'Bone' },
+    { a:'🐝', b:'🌼', arA:'نحلة', arB:'زهرة', enA:'Bee', enB:'Flower' },
+    { a:'🐟', b:'🌊', arA:'سمكة', arB:'ماء', enA:'Fish', enB:'Water' },
+    { a:'🚗', b:'🛣️', arA:'سيارة', arB:'طريق', enA:'Car', enB:'Road' },
+    { a:'✈️', b:'☁️', arA:'طائرة', arB:'سماء', enA:'Plane', enB:'Sky' },
+    { a:'🌙', b:'⭐', arA:'قمر', arB:'نجمة', enA:'Moon', enB:'Star' }
+  ]},
+  { nameAr:'المستوى ٢: المكان والوظيفة', nameEn:'Level 2: Place & purpose', pairs:[
+    { a:'🐦', b:'🪺', arA:'عصفور', arB:'عش', enA:'Bird', enB:'Nest' },
+    { a:'🐘', b:'🌿', arA:'فيل', arB:'أوراق', enA:'Elephant', enB:'Leaves' },
+    { a:'🐴', b:'🧲', arA:'حصان', arB:'إسطبل', enA:'Horse', enB:'Stable' },
+    { a:'🚂', b:'🛤️', arA:'قطار', arB:'سكة', enA:'Train', enB:'Railway' },
+    { a:'🚤', b:'🌊', arA:'قارب', arB:'ماء', enA:'Boat', enB:'Water' },
+    { a:'👩‍⚕️', b:'🩺', arA:'طبيبة', arB:'سماعة', enA:'Doctor', enB:'Stethoscope' },
+    { a:'✏️', b:'📖', arA:'قلم', arB:'كتاب', enA:'Pencil', enB:'Book' }
+  ]},
+  { nameAr:'المستوى ٣: تحدّي المستكشفة', nameEn:'Level 3: Explorer', pairs:[
+    { a:'🦒', b:'🌳', arA:'زرافة', arB:'شجرة', enA:'Giraffe', enB:'Tree' },
+    { a:'🐸', b:'🪷', arA:'ضفدع', arB:'بركة', enA:'Frog', enB:'Pond' },
+    { a:'🐪', b:'🏜️', arA:'جمل', arB:'صحراء', enA:'Camel', enB:'Desert' },
+    { a:'🐧', b:'🧊', arA:'بطريق', arB:'جليد', enA:'Penguin', enB:'Ice' },
+    { a:'🌱', b:'💧', arA:'نبتة', arB:'ماء', enA:'Plant', enB:'Water' },
+    { a:'🧑‍🚒', b:'🚒', arA:'إطفائي', arB:'سيارة إطفاء', enA:'Firefighter', enB:'Fire engine' },
+    { a:'🧑‍🍳', b:'🍲', arA:'طاهٍ', arB:'طعام', enA:'Chef', enB:'Food' }
+  ]}
+];
+
+let matchLevel = 0;
+let matchBusy = false;
+let matchSelections = [];
+let matchFound = new Set();
+let matchData = { left: [], right: [] };
+
+function renderMemory(c) {
+  matchBusy = false;
+  matchSelections = [];
+  matchFound = new Set();
+
+  const level = matchingLevels[matchLevel];
+  const left = level.pairs.map((p, i) => ({
+    id: i, emoji: p.a, label: lang === 'ar' ? p.arA : p.enA, side: 'L'
+  })).sort(() => Math.random() - 0.5);
+  const right = level.pairs.map((p, i) => ({
+    id: i, emoji: p.b, label: lang === 'ar' ? p.arB : p.enB, side: 'R'
+  })).sort(() => Math.random() - 0.5);
+  matchData = { left, right };
+
+  c.innerHTML = `
+    <h2>${title('🧩 لعبة المطابقة','🧩 Matching Game')}</h2>
+    <p>${title('اختاري بطاقة من العمود ١ ثم ما يرتبط بها في العمود ٢. اضغطي على البطاقة المختارة مرة أخرى لإلغاء الاختيار.','Pick a tile from Column 1, then its pair from Column 2. Tap the selected tile again to cancel.')}</p>
+    <div class="tile" style="min-height:auto;margin:10px 0">
+      <strong>${lang === 'ar' ? level.nameAr : level.nameEn}</strong>
+      <small>${title('المستوى','Level')} ${matchLevel + 1} / 3</small>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div><h3 style="text-align:center">${title('١','Col 1')}</h3>
+        <div style="display:grid;gap:8px">${left.map((x, i) => matchButton(x, i)).join('')}</div>
+      </div>
+      <div><h3 style="text-align:center">${title('٢','Col 2')}</h3>
+        <div style="display:grid;gap:8px">${right.map((x, i) => matchButton(x, i)).join('')}</div>
+      </div>
+    </div>
+    <p id="memFeedback" class="feedback">${title('اختاري بطاقة من كل عمود.','Choose one from each column.')}</p>
+    <p>${title('الأزواج:','Pairs:')}<strong id="matchCount">0 / 7</strong></p>
+    <div class="choices">
+      <button class="choice" onclick="renderMemory(document.getElementById('viewContent'))">🔄 ${title('إعادة','Restart')}</button>
+      ${matchLevel > 0 ? `<button class="choice" onclick="matchLevel--;renderMemory(document.getElementById('viewContent'))">⬅️ ${title('السابق','Previous')}</button>` : ''}
+    </div>
+  `;
+}
+
+function matchButton(x, i) {
+  return `<button class="animal" id="match${x.side}${i}" style="width:100%;min-height:76px"
+    onclick="chooseMatch('${x.side}',${i})">
+    <span class="emoji">${x.emoji}</span>
+    <strong>${x.label}</strong>
+  </button>`;
+}
+
+function chooseMatch(side, index) {
+  if (matchBusy) return;
+  const arr = side === 'L' ? matchData.left : matchData.right;
+  const item = arr[index];
+  if (!item || matchFound.has(item.id)) return;
+
+  const btn = $('match' + side + index);
+  if (!btn) return;
+
+  // Cancel if same tile is already selected (FIX: allow deselect)
+  const existingIdx = matchSelections.findIndex(s => s.side === side && s.index === index);
+  if (existingIdx >= 0) {
+    matchSelections.splice(existingIdx, 1);
+    btn.style.border = '';
+    return;
+  }
+
+  // If another tile from same side is selected, deselect it
+  const sameSide = matchSelections.findIndex(s => s.side === side);
+  if (sameSide >= 0) {
+    const old = matchSelections[sameSide];
+    const oldBtn = $('match' + old.side + old.index);
+    if (oldBtn) oldBtn.style.border = '';
+    matchSelections.splice(sameSide, 1);
+  }
+
+  btn.style.border = '3px solid #8456c9';
+  matchSelections.push({ side, index, item });
+
+  if (matchSelections.length < 2) return;
+
+  const [a, b] = matchSelections;
+  const feedback = $('memFeedback');
+
+  if (a.side === b.side) { matchSelections = []; return; }
+
+  if (a.item.id === b.item.id) {
+    matchFound.add(a.item.id);
+    [a, b].forEach(s => {
+      const el = $('match' + s.side + s.index);
+      if (el) {
+        el.style.background = '#d8f8df';
+        el.style.border = '3px solid #35bd78';
+        el.disabled = true;
+      }
+    });
+    if (feedback) feedback.textContent = title('برافو! 🎉','Bravo! 🎉');
+    const counter = $('matchCount');
+    if (counter) counter.textContent = matchFound.size + ' / 7';
+    addStar();
+    matchSelections = [];
+
+    if (matchFound.size === 7) {
+      matchBusy = true;
+      if (matchLevel < 2) {
+        if (feedback) feedback.textContent = title('رائعة! للمستوى التالي! 🌟','Amazing! Next level! 🌟');
+        setTimeout(() => { matchLevel++; renderMemory($('viewContent')); }, 1200);
+      } else {
+        if (feedback) feedback.textContent = title('بطلة! أكملتِ كل المستويات! 🏆','Champion! All levels! 🏆');
+        addStar(5);
+      }
+    }
+  } else {
+    if (feedback) feedback.textContent = title('قريب جدًا! فكّري 💗','Almost! Think 💗');
+    matchBusy = true;
+    setTimeout(() => {
+      [a, b].forEach(s => {
+        const el = $('match' + s.side + s.index);
+        if (el && !matchFound.has(s.item.id)) el.style.border = '';
+      });
+      matchSelections = [];
+      matchBusy = false;
+    }, 850);
+  }
+}
+
+/* ========== Song ========== */
+function renderSong(c) {
+  const lyrics = title(
+    'يا سيليا يا نور العين 🌟\nيا أحلى وردة بين البساتين 🌸\nيلا نلعب، يلا نغني 🎵\nوالعلم معانا يوم ورا يوم 💛',
+    'Celia, sunshine bright 🌟\nLet’s learn and play with delight 🌸\nColors, numbers, songs we sing 🎵\nHappy smiles in everything 💛'
+  );
+  c.innerHTML = `
+    <h2>${title('🎶 أغنية سيليا','🎶 Celia’s Song')}</h2>
+    <div class="big-emoji">🌈💗🎵</div>
+    <p style="white-space:pre-line;text-align:center;font-size:1.15rem;line-height:2">${lyrics}</p>
+    <p class="muted">${title('كلمات أصلية تجريبية.','Original demo lyrics.')}</p>
+    <button class="primary" id="songPlayBtn">${title('🔊 اسمعي','🔊 Read')}</button>
+    <p id="songLyrics" style="display:none">${lyrics}</p>
+  `;
+  const btn = $('songPlayBtn');
+  if (btn) btn.addEventListener('click', () => speak($('songLyrics').textContent));
+}
+
+/* ========== Initialization ========== */
+function applyInitial() {
+  const starNode = $('stars');
+  if (starNode) starNode.textContent = stars;
+  const bar = $('progress');
+  if (bar) bar.style.width = Math.min(100, stars * 5) + '%';
+  const label = $('progressText');
+  if (label && stars > 0) {
+    label.textContent = lang === 'ar'
+      ? 'أحسنتِ يا سيليا! نجومك محفوظة ⭐'
+      : 'Welcome back, Celia! Stars saved ⭐';
+  }
+}
+
+// Theme
+if (safeGet('celiaTheme', 'light') === 'dark') {
+  document.body.classList.add('dark');
+  const themeButton = $('themeBtn');
+  if (themeButton) themeButton.textContent = '☀️';
+}
+
+// Language (silent — no speech on load)
+applyLang(true);
+applyInitial();
+
+// Service worker registration (only if file exists at HTTPS)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
