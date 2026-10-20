@@ -1,0 +1,13 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#ff6fae"/>
+  <circle cx="256" cy="230" r="150" fill="#fff4fa"/>
+  <path d="M150 174 L120 91 L211 135 Z" fill="#fff4fa"/>
+  <path d="M362 174 L392 91 L301 135 Z" fill="#fff4fa"/>
+  <circle cx="207" cy="218" r="14" fill="#8456c9"/>
+  <circle cx="305" cy="218" r="14" fill="#8456c9"/>
+  <path d="M218 273 Q256 311 294 273" fill="none" stroke="#8456c9" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="166" cy="255" r="18" fill="#ffb2ce"/>
+  <circle cx="346" cy="255" r="18" fill="#ffb2ce"/>
+  <text x="256" y="432" text-anchor="middle" font-size="48" font-weight="bold" fill="#ffffff">CELIA</text>
+</svg>
