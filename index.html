@@ -85,10 +85,170 @@ function speak(text){
  u.onerror=()=>{const box=document.getElementById('audioStatus');if(box)box.textContent=title('لو لم تسمعي الصوت، افتحي اللعبة في Chrome واضغطي زر الصوت ثم اسمحي بالصوت.','If silent, open in Chrome and tap sound, then allow audio.')};speechSynthesis.speak(u);setTimeout(()=>{if(speechSynthesis.paused)speechSynthesis.resume()},180);
  }catch(e){beep(660,.2)}
 } 
-function unlockAudio(){try{if(window.AudioContext||window.webkitAudioContext){audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}if('speechSynthesis'in window)speechSynthesis.getVoices()}catch(e){}}
-function sayWelcome(){speak(lang==='ar'?'أهلا يا سيليا الجميلة! يلا نلعب ونتعلم ونفرح!':'Hello lovely Celia! Let us play, learn and have fun!');beep(660,.14);setTimeout(()=>beep(880,.16),180)}
-function beep(freq=660,dur=.15){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=.06;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.stop(audioCtx.currentTime+dur)}catch(e){}}
-function toggleMusic(){unlockAudio();musicOn=!musicOn;document.getElementById('soundBtn').textContent=musicOn?'🔇':'🎵';if(musicOn){[523,659,784,659].forEach((n,i)=>setTimeout(()=>{if(musicOn)beep(n,.18)},i*220))}}
+
+function audioStatus(ar, en) {
+  const box = document.getElementById('audioStatus');
+  if (box) box.textContent = lang === 'ar' ? ar : en;
+}
+
+function unlockAudio() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+
+    if (AC) {
+      audioCtx = audioCtx || new AC();
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(e => {
+          audioStatus(
+            'تعذر تشغيل الصوت: ' + e.message,
+            'Could not start audio: ' + e.message
+          );
+        });
+      }
+    }
+
+    if ('speechSynthesis' in window) {
+      speechSynthesis.getVoices();
+    }
+  } catch (e) {
+    audioStatus(
+      'خطأ في تهيئة الصوت: ' + e.message,
+      'Audio setup error: ' + e.message
+    );
+  }
+}
+
+function beep(freq = 660, dur = 0.2) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+
+    if (!AC) {
+      audioStatus(
+        'المتصفح لا يدعم النغمة التجريبية. جرب Chrome.',
+        'Browser does not support the test tone. Try Chrome.'
+      );
+      return false;
+    }
+
+    audioCtx = audioCtx || new AC();
+
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(e => {
+        audioStatus(
+          'تعذر استئناف الصوت: ' + e.message,
+          'Could not resume audio: ' + e.message
+        );
+      });
+    }
+
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+
+    o.type = 'sine';
+    o.frequency.value = freq;
+
+    g.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    g.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.03);
+    g.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioCtx.currentTime + dur
+    );
+
+    o.connect(g);
+    g.connect(audioCtx.destination);
+
+    o.start();
+    o.stop(audioCtx.currentTime + dur + 0.03);
+
+    return true;
+  } catch (e) {
+    audioStatus(
+      'خطأ صوتي: ' + (e.message || e),
+      'Audio error: ' + (e.message || e)
+    );
+    return false;
+  }
+}
+
+function speak(text) {
+  unlockAudio();
+
+  if (
+    !('speechSynthesis' in window) ||
+    !('SpeechSynthesisUtterance' in window)
+  ) {
+    audioStatus(
+      'النغمة قد تعمل، لكن الكلام غير مدعوم في هذا المتصفح. جرب Chrome.',
+      'Tone may work, but speech is unsupported. Try Chrome.'
+    );
+    beep(660, 0.2);
+    return;
+  }
+
+  try {
+    speechSynthesis.cancel();
+
+    const u = new SpeechSynthesisUtterance(String(text || ''));
+    u.lang = lang === 'ar' ? 'ar-EG' : 'en-US';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    u.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    const preferred = lang === 'ar'
+      ? voices.find(v => /^ar(-|_)/i.test(v.lang))
+      : voices.find(v => /^en(-|_)(US|GB)/i.test(v.lang));
+
+    if (preferred) u.voice = preferred;
+
+    u.onstart = () => audioStatus(
+      'بدأ تشغيل الكلام. هل تسمعينه؟',
+      'Speech started. Can you hear it?'
+    );
+
+    u.onerror = e => audioStatus(
+      'تعذر تشغيل الكلام: ' + (e.error || 'خطأ غير معروف'),
+      'Speech failed: ' + (e.error || 'unknown error')
+    );
+
+    speechSynthesis.speak(u);
+  } catch (e) {
+    audioStatus(
+      'خطأ في الكلام: ' + (e.message || e),
+      'Speech error: ' + (e.message || e)
+    );
+  }
+}
+
+function sayWelcome() {
+  speak(
+    lang === 'ar'
+      ? 'أهلا يا سيليا الجميلة! يلا نلعب ونتعلم ونفرح!'
+      : 'Hello lovely Celia! Let us play, learn and have fun!'
+  );
+}
+
+function toggleMusic() {
+  unlockAudio();
+  musicOn = !musicOn;
+
+  const btn = document.getElementById('soundBtn');
+  if (btn) btn.textContent = musicOn ? '🔇' : '🎵';
+
+  if (musicOn) {
+    [523, 659, 784, 659].forEach((n, i) => {
+      setTimeout(() => {
+        if (musicOn) beep(n, 0.18);
+      }, i * 250);
+    });
+
+    audioStatus(
+      'اختبار النغمة بدأ. إذا لم تسمعيها، راجعي صوت الجهاز.',
+      'Tone test started. If silent, check device volume.'
+    );
+  }
+}
 function addStar(n=1){stars=Math.max(0,stars+(Number(n)||1));safeSet('celiaStars',stars);document.getElementById('stars').textContent=stars;document.getElementById('progress').style.width=Math.min(100,stars*5)+'%';document.getElementById('progressText').textContent=lang==='ar'?'رائع يا سيليا! أحسنتِ! ⭐':'Great job, Celia! ⭐';beep(880,.2)}
 function openView(type){document.getElementById('home').classList.add('hidden');let v=document.getElementById('view');v.classList.remove('hidden');v.dataset.type=type;let c=document.getElementById('viewContent');if(type==='animals')renderAnimals(c);if(type==='numbers')renderNumbers(c);if(type==='colors')renderColors(c);if(type==='tours')renderTours(c);if(type==='memory')renderMemory(c);if(type==='song')renderSong(c);if(type==='cubes')renderCubes(c);if(type==='transport')renderTransport(c);window.scrollTo(0,0)}
 function goHome(){document.getElementById('view').classList.add('hidden');document.getElementById('home').classList.remove('hidden');window.scrollTo(0,0)}
