@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celia-smart-game-v3-2';
+const CACHE_NAME = 'celia-smart-world-v3-2';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './celia-pharaonic.jpg'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
