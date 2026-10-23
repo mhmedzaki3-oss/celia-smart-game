@@ -131,7 +131,7 @@ function showPaywall() {
 
 function promptActivationCode() {
     const code = prompt("أدخل كود التفعيل الذي استلمته:");
-    if (code === SECRET_CODE) { activatePremium(); } 
+    if (code && code.trim().toUpperCase() === SECRET_CODE) { activatePremium(); } 
     else if (code !== null) { alert("❌ كود غير صحيح. تأكد منه أو تواصل معنا عبر واتساب."); }
 }
 
