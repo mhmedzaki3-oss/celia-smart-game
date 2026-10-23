@@ -1,24 +1,24 @@
 {
-  "name": " سيليا سمارت ورلد - Celia Smart World",
-  "short_name": "Celia MZ",
-  "description": "لعبة سيليا التعليمية التفاعلية للأطفال: مطابقة ذكية وألوان وأرقام وحيوانات ووسائل نقل وإبداع.",
-  "lang": "ar",
-  "dir": "rtl",
+  "name": "Celia Smart World",
+  "short_name": "Celia World",
+  "description": "لعبة سيليا التعليمية التفاعلية للأطفال",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#fff4fb",
+  "background_color": "#eef7ff",
   "theme_color": "#168bff",
+  "lang": "ar",
+  "dir": "rtl",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
